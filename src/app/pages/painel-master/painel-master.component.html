@@ -1,0 +1,204 @@
+<div class="page-content">
+  <div class="container-wide">
+    <span class="eyebrow">Painel do master</span>
+    <h1>Administração</h1>
+    <p>Cadastre barbeiros, acompanhe o que foi prestado e gerencie a agenda de todo mundo.</p>
+
+    <div class="master-grid">
+      <form class="card" [formGroup]="formBarbeiro" (ngSubmit)="cadastrarBarbeiro()">
+        <h2>Cadastrar barbeiro</h2>
+
+        @if (erroCadastroBarbeiro()) {
+          <div class="alert alert-error">{{ erroCadastroBarbeiro() }}</div>
+        }
+        @if (sucessoCadastroBarbeiro()) {
+          <div class="alert alert-success">{{ sucessoCadastroBarbeiro() }}</div>
+        }
+
+        <div class="field">
+          <label for="nomeBarbeiro">Nome</label>
+          <input id="nomeBarbeiro" type="text" formControlName="nome" placeholder="Nome completo" autocomplete="off" />
+          @if (formBarbeiro.controls.nome.touched && formBarbeiro.controls.nome.invalid) {
+            <span class="field-error">Digite o nome.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="emailBarbeiro">Email</label>
+          <input id="emailBarbeiro" type="email" formControlName="email" placeholder="barbeiro@email.com" autocomplete="off" />
+          @if (formBarbeiro.controls.email.touched && formBarbeiro.controls.email.invalid) {
+            <span class="field-error">Digite um email válido.</span>
+          }
+          @if (errosPorCampoBarbeiro()['email']) {
+            <span class="field-error">{{ errosPorCampoBarbeiro()['email'] }}</span>
+          }
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="cpfBarbeiro">CPF</label>
+            <input id="cpfBarbeiro" type="text" formControlName="cpf" placeholder="Só números" maxlength="11" inputmode="numeric" />
+            @if (formBarbeiro.controls.cpf.touched && formBarbeiro.controls.cpf.invalid) {
+              <span class="field-error">CPF precisa ter 11 números.</span>
+            }
+            @if (errosPorCampoBarbeiro()['cpf']) {
+              <span class="field-error">{{ errosPorCampoBarbeiro()['cpf'] }}</span>
+            }
+          </div>
+
+          <div class="field">
+            <label for="telefoneBarbeiro">Telefone</label>
+            <input id="telefoneBarbeiro" type="text" formControlName="telefone" placeholder="DDD + número" maxlength="11" inputmode="numeric" />
+            @if (formBarbeiro.controls.telefone.touched && formBarbeiro.controls.telefone.invalid) {
+              <span class="field-error">Telefone precisa ter 11 números.</span>
+            }
+            @if (errosPorCampoBarbeiro()['telefone']) {
+              <span class="field-error">{{ errosPorCampoBarbeiro()['telefone'] }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="senhaBarbeiro">Senha provisória</label>
+          <input id="senhaBarbeiro" type="password" formControlName="senha" placeholder="Mínimo 8 caracteres" autocomplete="new-password" />
+          @if (formBarbeiro.controls.senha.touched && formBarbeiro.controls.senha.invalid) {
+            <span class="field-error">A senha precisa ter pelo menos 8 caracteres.</span>
+          }
+        </div>
+
+        <button type="submit" class="btn btn-primary" [disabled]="cadastrandoBarbeiro()">
+          {{ cadastrandoBarbeiro() ? 'Cadastrando...' : 'Cadastrar barbeiro' }}
+        </button>
+      </form>
+
+      <div class="card">
+        <h2>Relatório de serviços</h2>
+
+        <form [formGroup]="formRelatorio" (ngSubmit)="gerarRelatorio()">
+          <div class="field-row">
+            <div class="field">
+              <label for="inicioRelatorio">De</label>
+              <input id="inicioRelatorio" type="date" formControlName="inicio" />
+            </div>
+            <div class="field">
+              <label for="fimRelatorio">Até</label>
+              <input id="fimRelatorio" type="date" formControlName="fim" />
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-ghost" [disabled]="carregandoRelatorio()">
+            {{ carregandoRelatorio() ? 'Gerando...' : 'Gerar relatório' }}
+          </button>
+        </form>
+
+        @if (erroRelatorio()) {
+          <div class="alert alert-error">{{ erroRelatorio() }}</div>
+        } @else if (relatorio()) {
+          <div class="relatorio-resumo">
+            <div class="relatorio-total">
+              <strong>{{ relatorio()!.totalConcluidos }}</strong>
+              <span>serviços concluídos</span>
+            </div>
+            <div class="relatorio-total">
+              <strong>R$ {{ relatorio()!.valorTotal }}</strong>
+              <span>faturado no período</span>
+            </div>
+          </div>
+
+          @if (relatorio()!.porServico.length > 0) {
+            <table class="relatorio-tabela">
+              <thead>
+                <tr><th>Serviço</th><th>Qtd.</th><th>Valor</th></tr>
+              </thead>
+              <tbody>
+                @for (r of relatorio()!.porServico; track r.nomeServico) {
+                  <tr>
+                    <td>{{ r.nomeServico }}</td>
+                    <td>{{ r.quantidade }}</td>
+                    <td>R$ {{ r.valorTotal }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+
+            <table class="relatorio-tabela">
+              <thead>
+                <tr><th>Barbeiro</th><th>Qtd.</th></tr>
+              </thead>
+              <tbody>
+                @for (r of relatorio()!.porBarbeiro; track r.nomeBarbeiro) {
+                  <tr>
+                    <td>{{ r.nomeBarbeiro }}</td>
+                    <td>{{ r.quantidade }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          } @else {
+            <p>Nenhum serviço concluído nesse período.</p>
+          }
+        }
+      </div>
+    </div>
+
+    <div class="card agenda-geral-card">
+      <h2>Agenda geral</h2>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="filtroBarbeiro">Barbeiro</label>
+          <select id="filtroBarbeiro" (change)="mudarFiltroBarbeiro($any($event.target).value)">
+            <option value="">Todos os barbeiros</option>
+            @for (b of barbeiros(); track b.id) {
+              <option [value]="b.id">{{ b.nome }}</option>
+            }
+          </select>
+        </div>
+        <div class="field">
+          <label for="filtroData">Data</label>
+          <input
+            id="filtroData"
+            type="date"
+            [value]="filtroData()"
+            (change)="mudarFiltroData($any($event.target).value)"
+          />
+        </div>
+      </div>
+
+      @if (erroAgenda()) {
+        <div class="alert alert-error">{{ erroAgenda() }}</div>
+      }
+
+      @if (carregandoAgenda()) {
+        <p>Carregando agenda...</p>
+      } @else if (agendaFiltrada().length === 0) {
+        <p>Nenhum agendamento com esse filtro.</p>
+      } @else {
+        <div class="agendamentos-lista">
+          @for (ag of agendaFiltrada(); track ag.id) {
+            <div class="ticket-stub">
+              <div class="ticket-stub-main">
+                <span class="ticket-status status-{{ ag.status.toLowerCase() }}">{{ rotuloStatus(ag.status) }}</span>
+                <strong>{{ ag.servico.nomeServico }}</strong>
+                <span class="ticket-meta">{{ ag.cliente.nome }} com {{ ag.barbeiro.nome }}</span>
+                <span class="ticket-meta ticket-data">{{ ag.dataHoraInicio | date: 'dd/MM/yyyy · HH:mm' }}</span>
+              </div>
+
+              @if (ag.status === 'PENDENTE') {
+                <div class="ticket-actions">
+                  <button type="button" class="btn btn-primary" (click)="confirmar(ag.id)">Confirmar</button>
+                  <button type="button" class="btn btn-danger-ghost" (click)="cancelar(ag.id)">Cancelar</button>
+                </div>
+              } @else if (ag.status === 'CONFIRMADO') {
+                <div class="ticket-actions">
+                  <button type="button" class="btn btn-primary" (click)="concluir(ag.id)">Concluir</button>
+                  <button type="button" class="btn btn-danger-ghost" (click)="cancelar(ag.id)">Cancelar</button>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

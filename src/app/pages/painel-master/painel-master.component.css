@@ -1,0 +1,86 @@
+.master-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.75rem;
+  align-items: start;
+}
+
+@media (max-width: 820px) {
+  .master-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.master-grid h2 {
+  margin-bottom: 1.1rem;
+}
+
+.agenda-geral-card {
+  margin-top: 1.75rem;
+}
+
+.agenda-geral-card h2 {
+  margin-bottom: 1.1rem;
+}
+
+.agendamentos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 1rem;
+}
+
+.relatorio-resumo {
+  display: flex;
+  gap: 1rem;
+  margin: 1.25rem 0;
+}
+
+.relatorio-total {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.9rem 1rem;
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-sm);
+}
+
+.relatorio-total strong {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--color-accent-strong);
+}
+
+.relatorio-total span {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.relatorio-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.relatorio-tabela th,
+.relatorio-tabela td {
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--color-border-soft);
+}
+
+.relatorio-tabela th {
+  color: var(--color-text-muted);
+  font-weight: 500;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.relatorio-tabela td:last-child,
+.relatorio-tabela th:last-child {
+  text-align: right;
+  font-family: var(--font-mono);
+}

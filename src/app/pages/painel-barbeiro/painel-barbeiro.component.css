@@ -1,0 +1,6 @@
+.agendamentos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 1.25rem;
+}

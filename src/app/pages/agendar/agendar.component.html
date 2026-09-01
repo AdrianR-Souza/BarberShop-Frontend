@@ -1,0 +1,104 @@
+<div class="page-content">
+  <div class="container-wide">
+    <span class="eyebrow">Sua agenda</span>
+    <h1>Marcar horário</h1>
+    <p>Escolhe o barbeiro, o serviço e o horário que funciona pra você.</p>
+
+    @if (carregandoDados()) {
+      <p>Carregando...</p>
+    } @else {
+      <div class="agendar-grid">
+        <form class="card" [formGroup]="form" (ngSubmit)="agendar()">
+          <h2>Novo agendamento</h2>
+
+          @if (erroGeral()) {
+            <div class="alert alert-error">{{ erroGeral() }}</div>
+          }
+          @if (sucesso()) {
+            <div class="alert alert-success">{{ sucesso() }}</div>
+          }
+
+          <div class="field">
+            <label for="barbeiro">Barbeiro</label>
+            <select id="barbeiro" formControlName="barbeiroId">
+              <option value="" disabled selected>Escolhe um barbeiro</option>
+              @for (b of barbeiros(); track b.id) {
+                <option [value]="b.id">{{ b.nome }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="servico">Serviço</label>
+            <select id="servico" formControlName="servicoId">
+              <option value="" disabled selected>Escolhe um serviço</option>
+              @for (s of servicos(); track s.id) {
+                <option [value]="s.id">{{ s.nomeServico }} — {{ s.duracaoServico }}min — R$ {{ s.precoServico }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="data">Data</label>
+            <input id="data" type="date" formControlName="data" [attr.min]="dataMinima" />
+          </div>
+
+          @if (form.controls.barbeiroId.value && form.controls.servicoId.value && form.controls.data.value) {
+            <div class="field">
+              <label>Horário</label>
+
+              @if (carregandoHorarios()) {
+                <p class="horarios-status">Carregando horários...</p>
+              } @else if (erroHorarios()) {
+                <p class="horarios-status horarios-status-erro">{{ erroHorarios() }}</p>
+              } @else if (horariosDisponiveis().length === 0) {
+                <p class="horarios-status">Sem horários livres nesse dia. Tenta outra data.</p>
+              } @else {
+                <div class="horarios-grid">
+                  @for (h of horariosDisponiveis(); track h) {
+                    <button
+                      type="button"
+                      class="horario-slot"
+                      [class.horario-slot-selecionado]="form.controls.hora.value === h"
+                      (click)="selecionarHorario(h)"
+                    >
+                      {{ h }}
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          }
+
+          <button type="submit" class="btn btn-primary" [disabled]="enviando() || !form.controls.hora.value">
+            {{ enviando() ? 'Marcando...' : 'Marcar horário' }}
+          </button>
+        </form>
+
+        <div class="agendamentos-lista">
+          <h2>Seus agendamentos</h2>
+
+          @if (meusAgendamentos().length === 0) {
+            <p>Você ainda não tem nenhum agendamento marcado.</p>
+          }
+
+          @for (ag of meusAgendamentos(); track ag.id) {
+            <div class="ticket-stub">
+              <div class="ticket-stub-main">
+                <span class="ticket-status status-{{ ag.status.toLowerCase() }}">{{ rotuloStatus(ag.status) }}</span>
+                <strong>{{ ag.servico.nomeServico }}</strong>
+                <span class="ticket-meta">com {{ ag.barbeiro.nome }}</span>
+                <span class="ticket-meta ticket-data">{{ ag.dataHoraInicio | date: 'dd/MM/yyyy · HH:mm' }}</span>
+              </div>
+              @if (ag.status === 'PENDENTE' || ag.status === 'CONFIRMADO') {
+                <button type="button" class="btn btn-danger-ghost ticket-cancel" (click)="cancelar(ag.id)">
+                  Cancelar
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

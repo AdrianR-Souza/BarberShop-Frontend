@@ -1,0 +1,54 @@
+<div class="page-content">
+  <div class="container-narrow">
+    <span class="eyebrow">Painel do barbeiro</span>
+    <h1>Sua agenda do dia</h1>
+    <p>Confirma, conclui ou cancela os agendamentos marcados pra essa data.</p>
+
+    <div class="card">
+      <div class="field">
+        <label for="data">Data</label>
+        <input
+          id="data"
+          type="date"
+          [value]="data()"
+          (change)="mudarData($any($event.target).value)"
+        />
+      </div>
+
+      @if (erro()) {
+        <div class="alert alert-error">{{ erro() }}</div>
+      }
+
+      @if (carregando()) {
+        <p>Carregando agenda...</p>
+      } @else if (agenda().length === 0) {
+        <p>Nenhum agendamento pra esse dia.</p>
+      } @else {
+        <div class="agendamentos-lista">
+          @for (ag of agenda(); track ag.id) {
+            <div class="ticket-stub">
+              <div class="ticket-stub-main">
+                <span class="ticket-status status-{{ ag.status.toLowerCase() }}">{{ rotuloStatus(ag.status) }}</span>
+                <strong>{{ ag.servico.nomeServico }}</strong>
+                <span class="ticket-meta">com {{ ag.cliente.nome }}</span>
+                <span class="ticket-meta ticket-data">{{ ag.dataHoraInicio | date: 'HH:mm' }} — {{ ag.dataHoraFim | date: 'HH:mm' }}</span>
+              </div>
+
+              @if (ag.status === 'PENDENTE') {
+                <div class="ticket-actions">
+                  <button type="button" class="btn btn-primary" (click)="confirmar(ag.id)">Confirmar</button>
+                  <button type="button" class="btn btn-danger-ghost" (click)="cancelar(ag.id)">Cancelar</button>
+                </div>
+              } @else if (ag.status === 'CONFIRMADO') {
+                <div class="ticket-actions">
+                  <button type="button" class="btn btn-primary" (click)="concluir(ag.id)">Concluir</button>
+                  <button type="button" class="btn btn-danger-ghost" (click)="cancelar(ag.id)">Cancelar</button>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,57 @@
+<div class="page-content">
+  <div class="container-narrow">
+    <span class="eyebrow">Barber Trindade</span>
+    <h1>Recuperar senha</h1>
+    <p>Confirma o CPF e o telefone do seu cadastro pra criar uma senha nova.</p>
+
+    <form class="card" [formGroup]="form" (ngSubmit)="redefinir()">
+      @if (erro()) {
+        <div class="alert alert-error">{{ erro() }}</div>
+      }
+
+      <div class="field-row">
+        <div class="field">
+          <label for="cpf">CPF</label>
+          <input id="cpf" type="text" formControlName="cpf" placeholder="Só números" maxlength="11" inputmode="numeric" />
+          @if (form.controls.cpf.touched && form.controls.cpf.invalid) {
+            <span class="field-error">CPF precisa ter 11 números.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="telefone">Telefone</label>
+          <input id="telefone" type="text" formControlName="telefone" placeholder="DDD + número" maxlength="11" inputmode="numeric" />
+          @if (form.controls.telefone.touched && form.controls.telefone.invalid) {
+            <span class="field-error">Telefone precisa ter 11 números.</span>
+          }
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="novaSenha">Nova senha</label>
+        <input id="novaSenha" type="password" formControlName="novaSenha" placeholder="Mínimo 8 caracteres" autocomplete="new-password" />
+        @if (form.controls.novaSenha.touched && form.controls.novaSenha.invalid) {
+          <span class="field-error">A senha precisa ter pelo menos 8 caracteres.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="confirmarSenha">Confirmar nova senha</label>
+        <input id="confirmarSenha" type="password" formControlName="confirmarSenha" placeholder="Repete a senha" autocomplete="new-password" />
+        @if (form.controls.confirmarSenha.touched && form.errors?.['senhasDiferentes']) {
+          <span class="field-error">As senhas não coincidem.</span>
+        }
+      </div>
+
+      <button type="submit" class="btn btn-primary" [disabled]="carregando()">
+        {{ carregando() ? 'Salvando...' : 'Redefinir senha' }}
+      </button>
+
+      <div class="stub-divider"></div>
+
+      <p style="text-align: center; margin: 0;">
+        Lembrou a senha? <a routerLink="/login">Entrar</a>
+      </p>
+    </form>
+  </div>
+</div>

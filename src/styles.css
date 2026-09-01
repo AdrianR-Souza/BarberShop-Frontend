@@ -1,0 +1,377 @@
+/* ============================================================
+   Barbearia — tokens de design
+   Paleta: couro escuro + latão, inspirada nas ferragens de uma
+   cadeira de barbeiro clássica. Tipografia: serif de personalidade
+   nos títulos, sans limpa no corpo, mono nos horários/dados.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --color-bg: #17140f;
+  --color-surface: #211c15;
+  --color-surface-raised: #2b241b;
+  --color-border: #3d3423;
+  --color-border-soft: #2b241bcc;
+
+  --color-accent: #c89550;
+  --color-accent-strong: #e0ac65;
+  --color-accent-deep: #8c3a2f;
+
+  --color-text: #f3ede2;
+  --color-text-muted: #a89a85;
+  --color-text-faint: #756a58;
+
+  --color-success: #7a9b76;
+  --color-success-bg: #263323;
+  --color-error: #d1684f;
+  --color-error-bg: #3a221c;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow-card: 0 12px 32px -16px rgba(0, 0, 0, 0.55);
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  background-image:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(200, 149, 80, 0.08), transparent),
+    radial-gradient(ellipse 700px 500px at 100% 0%, rgba(140, 58, 47, 0.06), transparent);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.4em;
+  color: var(--color-text);
+}
+
+h1 {
+  font-size: clamp(1.9rem, 1.5rem + 1.6vw, 2.6rem);
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+p {
+  margin: 0 0 1em;
+  color: var(--color-text-muted);
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-accent-strong);
+  text-decoration: underline;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-strong);
+  outline-offset: 2px;
+}
+
+.page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+.container-narrow {
+  width: 100%;
+  max-width: 420px;
+}
+
+.container-wide {
+  width: 100%;
+  max-width: 880px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 0.6rem;
+  display: inline-block;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 2rem;
+}
+
+.field {
+  margin-bottom: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.field input,
+.field select {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.65rem 0.8rem;
+  transition: border-color 0.15s ease;
+}
+
+.field input::placeholder {
+  color: var(--color-text-faint);
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+.field-error {
+  font-size: 0.78rem;
+  color: var(--color-error);
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 480px) {
+  .field-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  padding: 0.7rem 1.3rem;
+  cursor: pointer;
+  transition: transform 0.1s ease, filter 0.15s ease, opacity 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, var(--color-accent-strong), var(--color-accent));
+  color: #1a1408;
+  width: 100%;
+}
+
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent-strong);
+}
+
+.btn-danger-ghost {
+  background: transparent;
+  border-color: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+.btn-danger-ghost:hover:not(:disabled) {
+  border-color: var(--color-error);
+}
+
+.alert {
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.95rem;
+  font-size: 0.88rem;
+  margin-bottom: 1.1rem;
+}
+
+.alert-error {
+  background: var(--color-error-bg);
+  color: #f2beae;
+  border: 1px solid var(--color-error);
+}
+
+.alert-success {
+  background: var(--color-success-bg);
+  color: #cfe3ca;
+  border: 1px solid var(--color-success);
+}
+
+.stub-divider {
+  position: relative;
+  height: 1px;
+  background: var(--color-border);
+  margin: 1.75rem 0;
+}
+
+.stub-divider::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 22px;
+  height: 22px;
+  background: var(--color-bg);
+  border-radius: 50%;
+  border: 1px dashed var(--color-border);
+}
+
+/* "Canhoto de ticket" — cada agendamento vira um talão, com uma faixa colorida
+   do lado, lembrando os antigos cadernos de agendamento em papel. Usado na lista
+   de agendamentos do cliente e na agenda do dia do barbeiro. */
+
+.ticket-stub {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.3rem;
+}
+
+.ticket-stub::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: var(--radius) 0 0 var(--radius);
+  background: var(--color-accent);
+}
+
+.ticket-stub-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.ticket-status {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  margin-bottom: 0.3rem;
+}
+
+.status-pendente {
+  background: #3a2f1a;
+  color: var(--color-accent-strong);
+}
+
+.status-confirmado {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.status-cancelado {
+  background: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+.status-concluido {
+  background: var(--color-surface-raised);
+  color: var(--color-text-muted);
+}
+
+.ticket-meta {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.ticket-data {
+  font-family: var(--font-mono);
+  color: var(--color-text);
+}
+
+.ticket-cancel {
+  flex-shrink: 0;
+  width: auto;
+}
+
+.ticket-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.ticket-actions .btn {
+  width: auto;
+}

@@ -1,0 +1,74 @@
+<div class="page-content">
+  <div class="container-narrow">
+    <span class="eyebrow">Barber Trindade </span>
+    <h1>Criar conta</h1>
+    <p>Cadastre-se pra marcar seu próximo horário.</p>
+
+    <form class="card" [formGroup]="form" (ngSubmit)="cadastrar()">
+      @if (erroGeral()) {
+        <div class="alert alert-error">{{ erroGeral() }}</div>
+      }
+
+      <div class="field">
+        <label for="nome">Nome</label>
+        <input id="nome" type="text" formControlName="nome" placeholder="Seu nome completo" autocomplete="name" />
+        @if (form.controls.nome.touched && form.controls.nome.invalid) {
+          <span class="field-error">Digite seu nome.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" placeholder="voce@email.com" autocomplete="email" />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <span class="field-error">Digite um email válido.</span>
+        }
+        @if (errosPorCampo()['email']) {
+          <span class="field-error">{{ errosPorCampo()['email'] }}</span>
+        }
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="cpf">CPF</label>
+          <input id="cpf" type="text" formControlName="cpf" placeholder="Só números" maxlength="11" inputmode="numeric" />
+          @if (form.controls.cpf.touched && form.controls.cpf.invalid) {
+            <span class="field-error">CPF precisa ter 11 números.</span>
+          }
+          @if (errosPorCampo()['cpf']) {
+            <span class="field-error">{{ errosPorCampo()['cpf'] }}</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="telefone">Telefone</label>
+          <input id="telefone" type="text" formControlName="telefone" placeholder="DDD + número" maxlength="11" inputmode="numeric" />
+          @if (form.controls.telefone.touched && form.controls.telefone.invalid) {
+            <span class="field-error">Telefone precisa ter 11 números.</span>
+          }
+          @if (errosPorCampo()['telefone']) {
+            <span class="field-error">{{ errosPorCampo()['telefone'] }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="senha">Senha</label>
+        <input id="senha" type="password" formControlName="senha" placeholder="Mínimo 8 caracteres" autocomplete="new-password" />
+        @if (form.controls.senha.touched && form.controls.senha.invalid) {
+          <span class="field-error">A senha precisa ter pelo menos 8 caracteres.</span>
+        }
+      </div>
+
+      <button type="submit" class="btn btn-primary" [disabled]="carregando()">
+        {{ carregando() ? 'Criando conta...' : 'Criar conta' }}
+      </button>
+
+      <div class="stub-divider"></div>
+
+      <p style="text-align: center; margin: 0;">
+        Já tem conta? <a routerLink="/login">Entrar</a>
+      </p>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,64 @@
+.agendar-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 1.75rem;
+  align-items: start;
+}
+
+@media (max-width: 820px) {
+  .agendar-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.agendar-grid h2 {
+  margin-bottom: 1.1rem;
+}
+
+.horarios-status {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.horarios-status-erro {
+  color: var(--color-error);
+}
+
+.horarios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr));
+  gap: 0.5rem;
+  max-height: 14rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.horario-slot {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  padding: 0.5rem 0.4rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.horario-slot:hover {
+  border-color: var(--color-accent);
+}
+
+.horario-slot-selecionado {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-bg);
+  font-weight: 600;
+}
+
+.agendamentos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}

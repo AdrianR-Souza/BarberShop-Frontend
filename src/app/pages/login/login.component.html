@@ -1,0 +1,46 @@
+<div class="page-content">
+  <div class="container-narrow">
+    <span class="eyebrow">Barber Trindade</span>
+    <h1>Entrar na sua conta</h1>
+    <p>Acesse pra marcar um horário ou ver seus agendamentos.</p>
+
+    <form class="card" [formGroup]="form" (ngSubmit)="entrar()">
+      @if (mensagemSucesso()) {
+        <div class="alert alert-success">{{ mensagemSucesso() }}</div>
+      }
+      @if (erro()) {
+        <div class="alert alert-error">{{ erro() }}</div>
+      }
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" placeholder="voce@email.com" autocomplete="email" />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <span class="field-error">Digite um email válido.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="senha">Senha</label>
+        <input id="senha" type="password" formControlName="senha" placeholder="••••••••" autocomplete="current-password" />
+        @if (form.controls.senha.touched && form.controls.senha.invalid) {
+          <span class="field-error">Digite sua senha.</span>
+        }
+      </div>
+
+      <p style="text-align: right; margin: -0.5rem 0 1rem; font-size: 0.9rem;">
+        <a routerLink="/esqueci-senha">Esqueceu sua senha?</a>
+      </p>
+
+      <button type="submit" class="btn btn-primary" [disabled]="carregando()">
+        {{ carregando() ? 'Entrando...' : 'Entrar' }}
+      </button>
+
+      <div class="stub-divider"></div>
+
+      <p style="text-align: center; margin: 0;">
+        Ainda não tem conta? <a routerLink="/cadastro">Criar conta</a>
+      </p>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+<header class="navbar">
+  <a routerLink="/" class="brand">
+    <img src="logo-192.png" alt="Barber Trindade 1" class="brand-mark" />
+    Barber Trindade 1
+  </a>
+
+  <nav class="nav-links">
+    @if (auth.isLoggedIn()) {
+      <a routerLink="/agendar" class="btn btn-ghost">Agendar</a>
+      @if (auth.role() === 'ROLE_BARBEIRO') {
+        <a routerLink="/painel-barbeiro" class="btn btn-ghost">Painel do barbeiro</a>
+      }
+      @if (auth.role() === 'ROLE_MASTER') {
+        <a routerLink="/painel-master" class="btn btn-ghost">Painel do master</a>
+      }
+      <button type="button" class="btn btn-danger-ghost" (click)="sair()">Sair</button>
+    } @else {
+      <a routerLink="/login" class="btn btn-ghost">Entrar</a>
+      <a routerLink="/cadastro" class="btn btn-primary nav-cta">Criar conta</a>
+    }
+  </nav>
+</header>
