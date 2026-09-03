@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UsuarioService } from '../../core/services/usuario.service';
 import { ErroApi } from '../../core/models/models';
+import { cpfValidator } from '../../core/utils/cpf';
 
 @Component({
   selector: 'app-cadastro',
@@ -26,7 +27,7 @@ export class CadastroComponent {
   form = this.fb.group({
     nome: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
-    cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
+    cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/), cpfValidator()]],
     telefone: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
     senha: ['', [Validators.required, Validators.minLength(8)]]
   });

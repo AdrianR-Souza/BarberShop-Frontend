@@ -38,8 +38,12 @@
           <div class="field">
             <label for="cpfBarbeiro">CPF</label>
             <input id="cpfBarbeiro" type="text" formControlName="cpf" placeholder="Só números" maxlength="11" inputmode="numeric" />
-            @if (formBarbeiro.controls.cpf.touched && formBarbeiro.controls.cpf.invalid) {
+            @if (formBarbeiro.controls.cpf.touched && formBarbeiro.controls.cpf.errors?.['required']) {
+              <span class="field-error">Digite o CPF.</span>
+            } @else if (formBarbeiro.controls.cpf.touched && formBarbeiro.controls.cpf.errors?.['pattern']) {
               <span class="field-error">CPF precisa ter 11 números.</span>
+            } @else if (formBarbeiro.controls.cpf.touched && formBarbeiro.controls.cpf.errors?.['cpfInvalido']) {
+              <span class="field-error">Esse CPF não é válido.</span>
             }
             @if (errosPorCampoBarbeiro()['cpf']) {
               <span class="field-error">{{ errosPorCampoBarbeiro()['cpf'] }}</span>

@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, Validati
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SenhaService } from '../../core/services/senha.service';
+import { cpfValidator } from '../../core/utils/cpf';
 
 function senhasIguaisValidator(grupo: AbstractControl): ValidationErrors | null {
   const novaSenha = grupo.get('novaSenha')?.value;
@@ -27,7 +28,7 @@ export class EsqueciSenhaComponent {
 
   form = this.fb.group(
     {
-      cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
+      cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/), cpfValidator()]],
       telefone: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
       novaSenha: ['', [Validators.required, Validators.minLength(8)]],
       confirmarSenha: ['', [Validators.required]]

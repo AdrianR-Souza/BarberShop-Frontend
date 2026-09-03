@@ -32,8 +32,12 @@
         <div class="field">
           <label for="cpf">CPF</label>
           <input id="cpf" type="text" formControlName="cpf" placeholder="Só números" maxlength="11" inputmode="numeric" />
-          @if (form.controls.cpf.touched && form.controls.cpf.invalid) {
+          @if (form.controls.cpf.touched && form.controls.cpf.errors?.['required']) {
+            <span class="field-error">Digite o CPF.</span>
+          } @else if (form.controls.cpf.touched && form.controls.cpf.errors?.['pattern']) {
             <span class="field-error">CPF precisa ter 11 números.</span>
+          } @else if (form.controls.cpf.touched && form.controls.cpf.errors?.['cpfInvalido']) {
+            <span class="field-error">Esse CPF não é válido.</span>
           }
           @if (errosPorCampo()['cpf']) {
             <span class="field-error">{{ errosPorCampo()['cpf'] }}</span>

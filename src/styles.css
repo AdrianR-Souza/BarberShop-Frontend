@@ -145,6 +145,7 @@ a:hover {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  min-width: 0;
 }
 
 .field label {
@@ -155,6 +156,8 @@ a:hover {
 
 .field input,
 .field select {
+  width: 100%;
+  box-sizing: border-box;
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);

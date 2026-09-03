@@ -7,6 +7,7 @@ import { AgendaService } from '../../core/services/agenda.service';
 import { Agendamento, ErroApi, RelatorioServicos, Usuario } from '../../core/models/models';
 import { rotuloStatusAgendamento } from '../../core/utils/status-agendamento';
 import { dataLocalISO } from '../../core/utils/data';
+import { cpfValidator } from '../../core/utils/cpf';
 
 @Component({
   selector: 'app-painel-master',
@@ -30,7 +31,7 @@ export class PainelMasterComponent implements OnInit {
   formBarbeiro = this.fb.group({
     nome: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
-    cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
+    cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/), cpfValidator()]],
     telefone: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
     senha: ['', [Validators.required, Validators.minLength(8)]]
   });
