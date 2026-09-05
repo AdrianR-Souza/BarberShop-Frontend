@@ -50,8 +50,7 @@ export class CadastroComponent {
         email: dados.email!,
         cpf: dados.cpf!,
         telefone: dados.telefone!,
-        senha: dados.senha!,
-        role: 'ROLE_CLIENTE'
+        senha: dados.senha!
       })
       .subscribe({
         next: () => {

@@ -16,7 +16,6 @@ export interface UsuarioCadastro {
   email: string;
   cpf: string;
   senha: string;
-  role: Role;
 }
 
 export interface LoginRequest {
@@ -86,7 +85,6 @@ export interface CadastroBarbeiro {
   email: string;
   cpf: string;
   senha: string;
-  role: Role;
 }
 
 export interface ResumoServico {

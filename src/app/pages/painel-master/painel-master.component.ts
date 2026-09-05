@@ -82,8 +82,7 @@ export class PainelMasterComponent implements OnInit {
         email: dados.email!,
         cpf: dados.cpf!,
         telefone: dados.telefone!,
-        senha: dados.senha!,
-        role: 'ROLE_BARBEIRO'
+        senha: dados.senha!
       })
       .subscribe({
         next: (barbeiro) => {
