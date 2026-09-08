@@ -43,6 +43,34 @@
             <input id="data" type="date" formControlName="data" [attr.min]="dataMinima" />
           </div>
 
+          <div class="field">
+            <label for="paraQuem">Esse horário é pra quem?</label>
+            <select id="paraQuem" formControlName="paraQuem">
+              <option value="mim">Pra mim</option>
+              <option value="terceiro">Pra outra pessoa</option>
+            </select>
+          </div>
+
+          @if (form.controls.paraQuem.value === 'terceiro') {
+            <div class="field-row">
+              <div class="field">
+                <label for="nomeTerceiro">Nome de quem vai atender</label>
+                <input id="nomeTerceiro" type="text" formControlName="nomeTerceiro" placeholder="Nome completo" />
+                @if (form.controls.nomeTerceiro.touched && form.controls.nomeTerceiro.invalid) {
+                  <span class="field-error">Digite o nome dessa pessoa.</span>
+                }
+              </div>
+
+              <div class="field">
+                <label for="idadeTerceiro">Idade</label>
+                <input id="idadeTerceiro" type="number" formControlName="idadeTerceiro" placeholder="Idade" min="1" max="120" />
+                @if (form.controls.idadeTerceiro.touched && form.controls.idadeTerceiro.invalid) {
+                  <span class="field-error">Digite uma idade válida.</span>
+                }
+              </div>
+            </div>
+          }
+
           @if (form.controls.barbeiroId.value && form.controls.servicoId.value && form.controls.data.value) {
             <div class="field">
               <label>Horário</label>
@@ -88,6 +116,9 @@
                 <span class="ticket-status status-{{ ag.status.toLowerCase() }}">{{ rotuloStatus(ag.status) }}</span>
                 <strong>{{ ag.servico.nomeServico }}</strong>
                 <span class="ticket-meta">com {{ ag.barbeiro.nome }}</span>
+                @if (ag.nomeTerceiro) {
+                  <span class="ticket-meta">pra {{ ag.nomeTerceiro }} ({{ ag.idadeTerceiro }} anos)</span>
+                }
                 <span class="ticket-meta ticket-data">{{ ag.dataHoraInicio | date: 'dd/MM/yyyy · HH:mm' }}</span>
               </div>
               @if (ag.status === 'PENDENTE' || ag.status === 'CONFIRMADO') {

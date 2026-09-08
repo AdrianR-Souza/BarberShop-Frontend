@@ -39,6 +39,9 @@ export interface AgendamentoRequest {
   barbeiroId: number;
   servicoId: number;
   dataHoraInicio: string; // formato ISO, ex: "2026-08-20T14:30:00"
+  // preenchidos só quando o agendamento é pra outra pessoa
+  nomeTerceiro?: string;
+  idadeTerceiro?: number;
 }
 
 export type StatusAgendamento = 'PENDENTE' | 'CONFIRMADO' | 'CANCELADO' | 'CONCLUIDO';
@@ -51,6 +54,8 @@ export interface Agendamento {
   dataHoraInicio: string;
   dataHoraFim: string;
   status: StatusAgendamento;
+  nomeTerceiro?: string;
+  idadeTerceiro?: number;
 }
 
 // Mensagem de erro padrão devolvida pelo GlobalExceptionHandler:

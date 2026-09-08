@@ -44,7 +44,10 @@ export class AgendarComponent implements OnInit {
     barbeiroId: ['', Validators.required],
     servicoId: ['', Validators.required],
     data: ['', Validators.required],
-    hora: ['', Validators.required]
+    hora: ['', Validators.required],
+    paraQuem: ['mim' as 'mim' | 'terceiro', Validators.required],
+    nomeTerceiro: [''],
+    idadeTerceiro: ['']
   });
 
   ngOnInit(): void {
@@ -53,6 +56,26 @@ export class AgendarComponent implements OnInit {
     this.form.controls.barbeiroId.valueChanges.subscribe(() => this.atualizarHorariosDisponiveis());
     this.form.controls.servicoId.valueChanges.subscribe(() => this.atualizarHorariosDisponiveis());
     this.form.controls.data.valueChanges.subscribe(() => this.atualizarHorariosDisponiveis());
+
+    this.form.controls.paraQuem.valueChanges.subscribe((valor) => this.ajustarValidacaoTerceiro(valor));
+    this.ajustarValidacaoTerceiro(this.form.controls.paraQuem.value);
+  }
+
+  private ajustarValidacaoTerceiro(paraQuem: 'mim' | 'terceiro' | null): void {
+    const nomeCtrl = this.form.controls.nomeTerceiro;
+    const idadeCtrl = this.form.controls.idadeTerceiro;
+
+    if (paraQuem === 'terceiro') {
+      nomeCtrl.setValidators([Validators.required, Validators.minLength(2)]);
+      idadeCtrl.setValidators([Validators.required, Validators.min(1), Validators.max(120)]);
+    } else {
+      nomeCtrl.clearValidators();
+      idadeCtrl.clearValidators();
+      nomeCtrl.setValue('', { emitEvent: false });
+      idadeCtrl.setValue('', { emitEvent: false });
+    }
+    nomeCtrl.updateValueAndValidity({ emitEvent: false });
+    idadeCtrl.updateValueAndValidity({ emitEvent: false });
   }
 
   private carregarTudo(): void {
@@ -118,19 +141,22 @@ export class AgendarComponent implements OnInit {
     this.sucesso.set(null);
     this.enviando.set(true);
 
-    const { barbeiroId, servicoId, data, hora } = this.form.getRawValue();
+    const { barbeiroId, servicoId, data, hora, paraQuem, nomeTerceiro, idadeTerceiro } = this.form.getRawValue();
 
     this.agendaService
       .criar({
         barbeiroId: Number(barbeiroId),
         servicoId: Number(servicoId),
-        dataHoraInicio: `${data}T${hora}:00`
+        dataHoraInicio: `${data}T${hora}:00`,
+        ...(paraQuem === 'terceiro'
+          ? { nomeTerceiro: nomeTerceiro!.trim(), idadeTerceiro: Number(idadeTerceiro) }
+          : {})
       })
       .subscribe({
         next: () => {
           this.enviando.set(false);
           this.sucesso.set('Agendamento marcado! Você vai ver ele na lista abaixo.');
-          this.form.reset();
+          this.form.reset({ paraQuem: 'mim' });
           this.horariosDisponiveis.set([]);
           this.carregarTudo();
         },
