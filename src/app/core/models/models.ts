@@ -36,7 +36,6 @@ export interface Servico {
 
 // Corpo enviado ao POST /agenda
 export interface AgendamentoRequest {
-  clienteId: number;
   barbeiroId: number;
   servicoId: number;
   dataHoraInicio: string; // formato ISO, ex: "2026-08-20T14:30:00"

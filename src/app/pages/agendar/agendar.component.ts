@@ -122,7 +122,6 @@ export class AgendarComponent implements OnInit {
 
     this.agendaService
       .criar({
-        clienteId: this.meuId,
         barbeiroId: Number(barbeiroId),
         servicoId: Number(servicoId),
         dataHoraInicio: `${data}T${hora}:00`
