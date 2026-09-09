@@ -5,6 +5,7 @@ import { AgendaService } from '../../core/services/agenda.service';
 import { Agendamento, Usuario } from '../../core/models/models';
 import { rotuloStatusAgendamento } from '../../core/utils/status-agendamento';
 import { dataLocalISO } from '../../core/utils/data';
+import { formatarTelefone } from '../../core/utils/telefone';
 
 @Component({
   selector: 'app-agenda-geral',
@@ -18,6 +19,7 @@ export class AgendaGeralComponent implements OnInit {
   private agendaService = inject(AgendaService);
 
   rotuloStatus = rotuloStatusAgendamento;
+  formatarTelefone = formatarTelefone;
 
   private hoje = dataLocalISO();
 

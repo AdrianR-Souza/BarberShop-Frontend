@@ -4,6 +4,7 @@ import { AgendaService } from '../../core/services/agenda.service';
 import { Agendamento } from '../../core/models/models';
 import { rotuloStatusAgendamento } from '../../core/utils/status-agendamento';
 import { dataLocalISO } from '../../core/utils/data';
+import { formatarTelefone } from '../../core/utils/telefone';
 
 @Component({
   selector: 'app-painel-barbeiro',
@@ -21,6 +22,7 @@ export class PainelBarbeiroComponent implements OnInit {
   readonly data = signal(dataLocalISO());
 
   rotuloStatus = rotuloStatusAgendamento;
+  formatarTelefone = formatarTelefone;
 
   ngOnInit(): void {
     this.carregarAgenda();

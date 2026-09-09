@@ -49,6 +49,7 @@
                 } @else {
                   <span class="ticket-meta">{{ ag.cliente.nome }} com {{ ag.barbeiro.nome }}</span>
                 }
+                <span class="ticket-meta">📞 {{ formatarTelefone(ag.cliente.telefone) }}</span>
                 <span class="ticket-meta ticket-data">{{ ag.dataHoraInicio | date: 'dd/MM/yyyy · HH:mm' }}</span>
               </div>
 
