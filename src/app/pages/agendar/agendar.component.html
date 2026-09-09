@@ -4,6 +4,16 @@
     <h1>Marcar horário</h1>
     <p>Escolhe o barbeiro, o serviço e o horário que funciona pra você.</p>
 
+    @if (ehMaster() && agendamentosPendentes().length > 0) {
+      <div class="alert alert-error lembrete-pendentes">
+        <span>
+          ⏰ Você tem {{ agendamentosPendentes().length }}
+          {{ agendamentosPendentes().length === 1 ? 'corte' : 'cortes' }} aguardando confirmação.
+        </span>
+        <a routerLink="/agenda-geral" [queryParams]="{ pendentes: 1 }" class="btn btn-ghost">Ver pendentes</a>
+      </div>
+    }
+
     @if (carregandoDados()) {
       <p>Carregando...</p>
     } @else {

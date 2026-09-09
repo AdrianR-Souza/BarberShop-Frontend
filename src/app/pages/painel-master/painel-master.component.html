@@ -2,17 +2,7 @@
   <div class="container-wide">
     <span class="eyebrow">Painel do master</span>
     <h1>Administração</h1>
-    <p>Cadastre barbeiros, acompanhe o que foi prestado e gerencie a agenda de todo mundo.</p>
-
-    @if (agendamentosPendentes().length > 0) {
-      <div class="alert alert-error lembrete-pendentes">
-        <span>
-          ⏰ Você tem {{ agendamentosPendentes().length }}
-          {{ agendamentosPendentes().length === 1 ? 'corte' : 'cortes' }} aguardando confirmação.
-        </span>
-        <button type="button" class="btn btn-ghost" (click)="verPendentes()">Ver pendentes</button>
-      </div>
-    }
+    <p>Cadastre barbeiros, serviços e acompanhe o que foi prestado.</p>
 
     <div class="master-grid">
       <form class="card" [formGroup]="formBarbeiro" (ngSubmit)="cadastrarBarbeiro()">
@@ -203,73 +193,40 @@
       @if (servicos().length > 0) {
         <ul class="lista-servicos">
           @for (s of servicos(); track s.id) {
-            <li>{{ s.nomeServico }} — {{ s.duracaoServico }}min — R$ {{ s.precoServico }}</li>
+            <li>
+              @if (editandoServicoId() === s.id) {
+                <form class="edicao-servico" [formGroup]="formEditarServico" (ngSubmit)="salvarEdicaoServico(s.id)">
+                  @if (erroEditarServico()) {
+                    <div class="alert alert-error">{{ erroEditarServico() }}</div>
+                  }
+                  <div class="field-row">
+                    <div class="field">
+                      <label [for]="'nomeServicoEdit' + s.id">Nome</label>
+                      <input [id]="'nomeServicoEdit' + s.id" type="text" formControlName="nomeServico" />
+                    </div>
+                    <div class="field">
+                      <label [for]="'duracaoServicoEdit' + s.id">Duração (min)</label>
+                      <input [id]="'duracaoServicoEdit' + s.id" type="number" formControlName="duracaoServico" min="1" />
+                    </div>
+                    <div class="field">
+                      <label [for]="'precoServicoEdit' + s.id">Preço (R$)</label>
+                      <input [id]="'precoServicoEdit' + s.id" type="number" formControlName="precoServico" min="0" step="0.01" />
+                    </div>
+                  </div>
+                  <div class="edicao-servico-acoes">
+                    <button type="submit" class="btn btn-primary" [disabled]="salvandoServico()">
+                      {{ salvandoServico() ? 'Salvando...' : 'Salvar' }}
+                    </button>
+                    <button type="button" class="btn btn-ghost" (click)="cancelarEdicaoServico()">Cancelar</button>
+                  </div>
+                </form>
+              } @else {
+                <span>{{ s.nomeServico }} — {{ s.duracaoServico }}min — R$ {{ s.precoServico }}</span>
+                <button type="button" class="btn btn-ghost" (click)="editarServico(s)">Editar</button>
+              }
+            </li>
           }
         </ul>
-      }
-    </div>
-
-    <div class="card agenda-geral-card">
-      <h2>Agenda geral</h2>
-
-      <div class="field-row">
-        <div class="field">
-          <label for="filtroBarbeiro">Barbeiro</label>
-          <select id="filtroBarbeiro" (change)="mudarFiltroBarbeiro($any($event.target).value)">
-            <option value="">Todos os barbeiros</option>
-            @for (b of barbeiros(); track b.id) {
-              <option [value]="b.id">{{ b.nome }}</option>
-            }
-          </select>
-        </div>
-        <div class="field">
-          <label for="filtroData">Data</label>
-          <input
-            id="filtroData"
-            type="date"
-            [value]="filtroData()"
-            (change)="mudarFiltroData($any($event.target).value)"
-          />
-        </div>
-      </div>
-
-      @if (erroAgenda()) {
-        <div class="alert alert-error">{{ erroAgenda() }}</div>
-      }
-
-      @if (carregandoAgenda()) {
-        <p>Carregando agenda...</p>
-      } @else if (agendaFiltrada().length === 0) {
-        <p>Nenhum agendamento com esse filtro.</p>
-      } @else {
-        <div class="agendamentos-lista">
-          @for (ag of agendaFiltrada(); track ag.id) {
-            <div class="ticket-stub">
-              <div class="ticket-stub-main">
-                <span class="ticket-status status-{{ ag.status.toLowerCase() }}">{{ rotuloStatus(ag.status) }}</span>
-                <strong>{{ ag.servico.nomeServico }}</strong>
-                @if (ag.nomeTerceiro) {
-                  <span class="ticket-meta">{{ ag.nomeTerceiro }} ({{ ag.idadeTerceiro }} anos) com {{ ag.barbeiro.nome }} — agendado por {{ ag.cliente.nome }}</span>
-                } @else {
-                  <span class="ticket-meta">{{ ag.cliente.nome }} com {{ ag.barbeiro.nome }}</span>
-                }
-                <span class="ticket-meta ticket-data">{{ ag.dataHoraInicio | date: 'dd/MM/yyyy · HH:mm' }}</span>
-              </div>
-
-              @if (ag.status === 'PENDENTE') {
-                <div class="ticket-actions">
-                  <button type="button" class="btn btn-primary" (click)="confirmar(ag.id)">Confirmar</button>
-                  <button type="button" class="btn btn-danger-ghost" (click)="cancelar(ag.id)">Cancelar</button>
-                </div>
-              } @else if (ag.status === 'CONFIRMADO') {
-                <div class="ticket-actions">
-                  <button type="button" class="btn btn-primary" (click)="concluir(ag.id)">Concluir</button>
-                  <button type="button" class="btn btn-danger-ghost" (click)="cancelar(ag.id)">Cancelar</button>
-                </div>
-              }
-            </div>
-          }
-        </div>
       }
     </div>
   </div>

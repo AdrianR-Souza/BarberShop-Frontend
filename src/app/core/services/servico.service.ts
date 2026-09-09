@@ -17,4 +17,8 @@ export class ServicoService {
   cadastrar(servico: ServicoCadastro): Observable<Servico> {
     return this.http.post<Servico>(this.baseUrl, servico);
   }
+
+  atualizar(id: number, servico: ServicoCadastro): Observable<Servico> {
+    return this.http.put<Servico>(`${this.baseUrl}/${id}`, servico);
+  }
 }

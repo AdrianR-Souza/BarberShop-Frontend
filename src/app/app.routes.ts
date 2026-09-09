@@ -40,5 +40,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/painel-master/painel-master.component').then((m) => m.PainelMasterComponent)
   },
+  {
+    path: 'agenda-geral',
+    canActivate: [masterGuard],
+    loadComponent: () =>
+      import('./pages/agenda-geral/agenda-geral.component').then((m) => m.AgendaGeralComponent)
+  },
   { path: '**', redirectTo: 'login' }
 ];

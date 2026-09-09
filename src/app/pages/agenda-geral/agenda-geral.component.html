@@ -1,0 +1,72 @@
+<div class="page-content">
+  <div class="container-wide">
+    <span class="eyebrow">Visão geral</span>
+    <h1>Agenda por barbeiro</h1>
+    <p>Acompanhe e gerencie os agendamentos de qualquer barbeiro.</p>
+
+    <div class="card">
+      <div class="field-row">
+        <div class="field">
+          <label for="filtroBarbeiro">Barbeiro</label>
+          <select id="filtroBarbeiro" [value]="filtroBarbeiroId()" (change)="mudarFiltroBarbeiro($any($event.target).value)">
+            <option value="">Todos os barbeiros</option>
+            @for (b of barbeiros(); track b.id) {
+              <option [value]="b.id">{{ b.nome }}</option>
+            }
+          </select>
+        </div>
+        <div class="field">
+          <label for="filtroData">Data</label>
+          <input
+            id="filtroData"
+            type="date"
+            [value]="filtroData()"
+            (change)="mudarFiltroData($any($event.target).value)"
+          />
+        </div>
+        <div class="field field-acao">
+          <button type="button" class="btn btn-ghost" (click)="limparFiltroData()">Ver todas as datas</button>
+        </div>
+      </div>
+
+      @if (erroAgenda()) {
+        <div class="alert alert-error">{{ erroAgenda() }}</div>
+      }
+
+      @if (carregandoAgenda()) {
+        <p>Carregando agenda...</p>
+      } @else if (agendaFiltrada().length === 0) {
+        <p>Nenhum agendamento com esse filtro.</p>
+      } @else {
+        <div class="agendamentos-lista">
+          @for (ag of agendaFiltrada(); track ag.id) {
+            <div class="ticket-stub">
+              <div class="ticket-stub-main">
+                <span class="ticket-status status-{{ ag.status.toLowerCase() }}">{{ rotuloStatus(ag.status) }}</span>
+                <strong>{{ ag.servico.nomeServico }}</strong>
+                @if (ag.nomeTerceiro) {
+                  <span class="ticket-meta">{{ ag.nomeTerceiro }} ({{ ag.idadeTerceiro }} anos) com {{ ag.barbeiro.nome }} — agendado por {{ ag.cliente.nome }}</span>
+                } @else {
+                  <span class="ticket-meta">{{ ag.cliente.nome }} com {{ ag.barbeiro.nome }}</span>
+                }
+                <span class="ticket-meta ticket-data">{{ ag.dataHoraInicio | date: 'dd/MM/yyyy · HH:mm' }}</span>
+              </div>
+
+              @if (ag.status === 'PENDENTE') {
+                <div class="ticket-actions">
+                  <button type="button" class="btn btn-primary" (click)="confirmar(ag.id)">Confirmar</button>
+                  <button type="button" class="btn btn-danger-ghost" (click)="cancelar(ag.id)">Cancelar</button>
+                </div>
+              } @else if (ag.status === 'CONFIRMADO') {
+                <div class="ticket-actions">
+                  <button type="button" class="btn btn-primary" (click)="concluir(ag.id)">Concluir</button>
+                  <button type="button" class="btn btn-danger-ghost" (click)="cancelar(ag.id)">Cancelar</button>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

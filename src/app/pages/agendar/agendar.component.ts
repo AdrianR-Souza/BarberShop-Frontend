@@ -2,10 +2,12 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { UsuarioService } from '../../core/services/usuario.service';
 import { ServicoService } from '../../core/services/servico.service';
 import { AgendaService } from '../../core/services/agenda.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Agendamento, Servico, Usuario } from '../../core/models/models';
 import { rotuloStatusAgendamento } from '../../core/utils/status-agendamento';
 import { dataLocalISO } from '../../core/utils/data';
@@ -13,7 +15,7 @@ import { dataLocalISO } from '../../core/utils/data';
 @Component({
   selector: 'app-agendar',
   standalone: true,
-  imports: [ReactiveFormsModule, DatePipe],
+  imports: [ReactiveFormsModule, DatePipe, RouterLink],
   templateUrl: './agendar.component.html',
   styleUrl: './agendar.component.css'
 })
@@ -22,6 +24,10 @@ export class AgendarComponent implements OnInit {
   private usuarioService = inject(UsuarioService);
   private servicoService = inject(ServicoService);
   private agendaService = inject(AgendaService);
+  private auth = inject(AuthService);
+
+  readonly ehMaster = () => this.auth.role() === 'ROLE_MASTER';
+  readonly agendamentosPendentes = signal<Agendamento[]>([]);
 
   readonly carregandoDados = signal(true);
   readonly enviando = signal(false);
@@ -95,11 +101,21 @@ export class AgendarComponent implements OnInit {
           [...agendamentos].sort((a, b) => a.dataHoraInicio.localeCompare(b.dataHoraInicio))
         );
         this.carregandoDados.set(false);
+
+        if (this.ehMaster()) {
+          this.carregarPendentes();
+        }
       },
       error: () => {
         this.carregandoDados.set(false);
         this.erroGeral.set('Não deu pra carregar seus dados agora. Recarrega a página em instantes.');
       }
+    });
+  }
+
+  private carregarPendentes(): void {
+    this.agendaService.listarTodos().subscribe({
+      next: (todos) => this.agendamentosPendentes.set(todos.filter((a) => a.status === 'PENDENTE'))
     });
   }
 

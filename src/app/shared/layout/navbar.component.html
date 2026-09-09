@@ -12,6 +12,7 @@
       }
       @if (auth.role() === 'ROLE_MASTER') {
         <a routerLink="/painel-master" class="btn btn-ghost">Painel do master</a>
+        <a routerLink="/agenda-geral" class="btn btn-ghost">Agenda geral</a>
       }
       <button type="button" class="btn btn-danger-ghost" (click)="sair()">Sair</button>
     } @else {

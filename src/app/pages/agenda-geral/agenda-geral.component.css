@@ -1,0 +1,14 @@
+.field-acao {
+  justify-content: flex-end;
+}
+
+.field-acao .btn {
+  width: auto;
+}
+
+.agendamentos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 1.5rem;
+}

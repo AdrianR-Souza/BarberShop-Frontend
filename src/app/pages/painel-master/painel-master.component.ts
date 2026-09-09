@@ -1,19 +1,17 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { DatePipe } from '@angular/common';
 import { UsuarioService } from '../../core/services/usuario.service';
 import { AgendaService } from '../../core/services/agenda.service';
 import { ServicoService } from '../../core/services/servico.service';
-import { Agendamento, ErroApi, RelatorioServicos, Servico, Usuario } from '../../core/models/models';
-import { rotuloStatusAgendamento } from '../../core/utils/status-agendamento';
+import { ErroApi, RelatorioServicos, Servico } from '../../core/models/models';
 import { dataLocalISO } from '../../core/utils/data';
 import { cpfValidator } from '../../core/utils/cpf';
 
 @Component({
   selector: 'app-painel-master',
   standalone: true,
-  imports: [ReactiveFormsModule, DatePipe],
+  imports: [ReactiveFormsModule],
   templateUrl: './painel-master.component.html',
   styleUrl: './painel-master.component.css'
 })
@@ -22,8 +20,6 @@ export class PainelMasterComponent implements OnInit {
   private usuarioService = inject(UsuarioService);
   private agendaService = inject(AgendaService);
   private servicoService = inject(ServicoService);
-
-  rotuloStatus = rotuloStatusAgendamento;
 
   readonly cadastrandoBarbeiro = signal(false);
   readonly erroCadastroBarbeiro = signal<string | null>(null);
@@ -50,6 +46,16 @@ export class PainelMasterComponent implements OnInit {
     precoServico: ['', [Validators.required, Validators.min(0)]]
   });
 
+  readonly editandoServicoId = signal<number | null>(null);
+  readonly salvandoServico = signal(false);
+  readonly erroEditarServico = signal<string | null>(null);
+
+  formEditarServico = this.fb.group({
+    nomeServico: ['', [Validators.required, Validators.minLength(2)]],
+    duracaoServico: ['', [Validators.required, Validators.min(1)]],
+    precoServico: ['', [Validators.required, Validators.min(0)]]
+  });
+
   readonly carregandoRelatorio = signal(false);
   readonly erroRelatorio = signal<string | null>(null);
   readonly relatorio = signal<RelatorioServicos | null>(null);
@@ -62,19 +68,8 @@ export class PainelMasterComponent implements OnInit {
     fim: [this.hoje, Validators.required]
   });
 
-  readonly carregandoAgenda = signal(false);
-  readonly erroAgenda = signal<string | null>(null);
-  readonly barbeiros = signal<Usuario[]>([]);
-  readonly todosOsAgendamentos = signal<Agendamento[]>([]);
-  readonly filtroBarbeiroId = signal<string>('');
-  readonly filtroData = signal<string>(this.hoje);
-
   ngOnInit(): void {
-    this.usuarioService.listarBarbeiros().subscribe({
-      next: (barbeiros) => this.barbeiros.set(barbeiros)
-    });
     this.carregarServicos();
-    this.carregarAgendaGeral();
     this.gerarRelatorio();
   }
 
@@ -121,13 +116,49 @@ export class PainelMasterComponent implements OnInit {
       });
   }
 
-  agendamentosPendentes(): Agendamento[] {
-    return this.todosOsAgendamentos().filter((a) => a.status === 'PENDENTE');
+  editarServico(servico: Servico): void {
+    this.editandoServicoId.set(servico.id);
+    this.erroEditarServico.set(null);
+    this.formEditarServico.setValue({
+      nomeServico: servico.nomeServico,
+      duracaoServico: String(servico.duracaoServico),
+      precoServico: String(servico.precoServico)
+    });
   }
 
-  verPendentes(): void {
-    this.filtroBarbeiroId.set('');
-    this.filtroData.set('');
+  cancelarEdicaoServico(): void {
+    this.editandoServicoId.set(null);
+    this.erroEditarServico.set(null);
+  }
+
+  salvarEdicaoServico(id: number): void {
+    if (this.formEditarServico.invalid) {
+      this.formEditarServico.markAllAsTouched();
+      return;
+    }
+
+    this.erroEditarServico.set(null);
+    this.salvandoServico.set(true);
+
+    const dados = this.formEditarServico.getRawValue();
+
+    this.servicoService
+      .atualizar(id, {
+        nomeServico: dados.nomeServico!,
+        duracaoServico: Number(dados.duracaoServico),
+        precoServico: Number(dados.precoServico)
+      })
+      .subscribe({
+        next: () => {
+          this.salvandoServico.set(false);
+          this.editandoServicoId.set(null);
+          this.carregarServicos();
+        },
+        error: () => {
+          this.salvandoServico.set(false);
+          this.erroEditarServico.set('Não foi possível salvar agora. Tenta de novo em instantes.');
+        }
+      });
   }
 
   cadastrarBarbeiro(): void {
@@ -156,7 +187,6 @@ export class PainelMasterComponent implements OnInit {
           this.cadastrandoBarbeiro.set(false);
           this.sucessoCadastroBarbeiro.set(`Barbeiro "${barbeiro.nome}" cadastrado com sucesso.`);
           this.formBarbeiro.reset();
-          this.usuarioService.listarBarbeiros().subscribe({ next: (b) => this.barbeiros.set(b) });
         },
         error: (err: HttpErrorResponse) => {
           this.cadastrandoBarbeiro.set(false);
@@ -190,62 +220,6 @@ export class PainelMasterComponent implements OnInit {
         this.carregandoRelatorio.set(false);
         this.erroRelatorio.set('Não deu pra gerar o relatório agora. Tenta de novo em instantes.');
       }
-    });
-  }
-
-  mudarFiltroBarbeiro(barbeiroId: string): void {
-    this.filtroBarbeiroId.set(barbeiroId);
-  }
-
-  mudarFiltroData(data: string): void {
-    this.filtroData.set(data);
-    this.carregarAgendaGeral();
-  }
-
-  private carregarAgendaGeral(): void {
-    this.erroAgenda.set(null);
-    this.carregandoAgenda.set(true);
-
-    this.agendaService.listarTodos().subscribe({
-      next: (agendamentos) => {
-        this.carregandoAgenda.set(false);
-        this.todosOsAgendamentos.set(agendamentos);
-      },
-      error: () => {
-        this.carregandoAgenda.set(false);
-        this.erroAgenda.set('Não deu pra carregar a agenda agora. Tenta de novo em instantes.');
-      }
-    });
-  }
-
-  agendaFiltrada(): Agendamento[] {
-    const barbeiroId = this.filtroBarbeiroId();
-    const data = this.filtroData();
-
-    return this.todosOsAgendamentos()
-      .filter((a) => !barbeiroId || String(a.barbeiro.id) === barbeiroId)
-      .filter((a) => !data || a.dataHoraInicio.startsWith(data))
-      .sort((a, b) => a.dataHoraInicio.localeCompare(b.dataHoraInicio));
-  }
-
-  confirmar(id: number): void {
-    this.agendaService.confirmar(id).subscribe({
-      next: () => this.carregarAgendaGeral(),
-      error: () => this.erroAgenda.set('Não foi possível confirmar esse agendamento agora.')
-    });
-  }
-
-  cancelar(id: number): void {
-    this.agendaService.cancelar(id).subscribe({
-      next: () => this.carregarAgendaGeral(),
-      error: () => this.erroAgenda.set('Não foi possível cancelar esse agendamento agora.')
-    });
-  }
-
-  concluir(id: number): void {
-    this.agendaService.concluir(id).subscribe({
-      next: () => this.carregarAgendaGeral(),
-      error: () => this.erroAgenda.set('Não foi possível concluir esse agendamento agora.')
     });
   }
 }
