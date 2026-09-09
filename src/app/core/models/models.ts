@@ -34,6 +34,13 @@ export interface Servico {
   precoServico: number;
 }
 
+// Corpo enviado ao POST /servicos
+export interface ServicoCadastro {
+  nomeServico: string;
+  duracaoServico: number;
+  precoServico: number;
+}
+
 // Corpo enviado ao POST /agenda
 export interface AgendamentoRequest {
   barbeiroId: number;

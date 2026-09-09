@@ -4,7 +4,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { UsuarioService } from '../../core/services/usuario.service';
 import { AgendaService } from '../../core/services/agenda.service';
-import { Agendamento, ErroApi, RelatorioServicos, Usuario } from '../../core/models/models';
+import { ServicoService } from '../../core/services/servico.service';
+import { Agendamento, ErroApi, RelatorioServicos, Servico, Usuario } from '../../core/models/models';
 import { rotuloStatusAgendamento } from '../../core/utils/status-agendamento';
 import { dataLocalISO } from '../../core/utils/data';
 import { cpfValidator } from '../../core/utils/cpf';
@@ -20,6 +21,7 @@ export class PainelMasterComponent implements OnInit {
   private fb = inject(FormBuilder);
   private usuarioService = inject(UsuarioService);
   private agendaService = inject(AgendaService);
+  private servicoService = inject(ServicoService);
 
   rotuloStatus = rotuloStatusAgendamento;
 
@@ -34,6 +36,18 @@ export class PainelMasterComponent implements OnInit {
     cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/), cpfValidator()]],
     telefone: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
     senha: ['', [Validators.required, Validators.minLength(8)]]
+  });
+
+  readonly cadastrandoServico = signal(false);
+  readonly erroCadastroServico = signal<string | null>(null);
+  readonly sucessoCadastroServico = signal<string | null>(null);
+  readonly errosPorCampoServico = signal<ErroApi>({});
+  readonly servicos = signal<Servico[]>([]);
+
+  formServico = this.fb.group({
+    nomeServico: ['', [Validators.required, Validators.minLength(2)]],
+    duracaoServico: ['', [Validators.required, Validators.min(1)]],
+    precoServico: ['', [Validators.required, Validators.min(0)]]
   });
 
   readonly carregandoRelatorio = signal(false);
@@ -59,8 +73,61 @@ export class PainelMasterComponent implements OnInit {
     this.usuarioService.listarBarbeiros().subscribe({
       next: (barbeiros) => this.barbeiros.set(barbeiros)
     });
+    this.carregarServicos();
     this.carregarAgendaGeral();
     this.gerarRelatorio();
+  }
+
+  private carregarServicos(): void {
+    this.servicoService.listarTodos().subscribe({
+      next: (servicos) => this.servicos.set(servicos)
+    });
+  }
+
+  cadastrarServico(): void {
+    if (this.formServico.invalid) {
+      this.formServico.markAllAsTouched();
+      return;
+    }
+
+    this.erroCadastroServico.set(null);
+    this.sucessoCadastroServico.set(null);
+    this.errosPorCampoServico.set({});
+    this.cadastrandoServico.set(true);
+
+    const dados = this.formServico.getRawValue();
+
+    this.servicoService
+      .cadastrar({
+        nomeServico: dados.nomeServico!,
+        duracaoServico: Number(dados.duracaoServico),
+        precoServico: Number(dados.precoServico)
+      })
+      .subscribe({
+        next: (servico) => {
+          this.cadastrandoServico.set(false);
+          this.sucessoCadastroServico.set(`Serviço "${servico.nomeServico}" cadastrado com sucesso.`);
+          this.formServico.reset();
+          this.carregarServicos();
+        },
+        error: (err: HttpErrorResponse) => {
+          this.cadastrandoServico.set(false);
+          if (err.status === 400 && err.error) {
+            this.errosPorCampoServico.set(err.error as ErroApi);
+          } else {
+            this.erroCadastroServico.set('Não foi possível cadastrar agora. Tenta de novo em instantes.');
+          }
+        }
+      });
+  }
+
+  agendamentosPendentes(): Agendamento[] {
+    return this.todosOsAgendamentos().filter((a) => a.status === 'PENDENTE');
+  }
+
+  verPendentes(): void {
+    this.filtroBarbeiroId.set('');
+    this.filtroData.set('');
   }
 
   cadastrarBarbeiro(): void {

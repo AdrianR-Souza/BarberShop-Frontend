@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Servico } from '../models/models';
+import { Servico, ServicoCadastro } from '../models/models';
 
 @Injectable({ providedIn: 'root' })
 export class ServicoService {
@@ -12,5 +12,9 @@ export class ServicoService {
 
   listarTodos(): Observable<Servico[]> {
     return this.http.get<Servico[]>(this.baseUrl);
+  }
+
+  cadastrar(servico: ServicoCadastro): Observable<Servico> {
+    return this.http.post<Servico>(this.baseUrl, servico);
   }
 }

@@ -4,6 +4,16 @@
     <h1>Administração</h1>
     <p>Cadastre barbeiros, acompanhe o que foi prestado e gerencie a agenda de todo mundo.</p>
 
+    @if (agendamentosPendentes().length > 0) {
+      <div class="alert alert-error lembrete-pendentes">
+        <span>
+          ⏰ Você tem {{ agendamentosPendentes().length }}
+          {{ agendamentosPendentes().length === 1 ? 'corte' : 'cortes' }} aguardando confirmação.
+        </span>
+        <button type="button" class="btn btn-ghost" (click)="verPendentes()">Ver pendentes</button>
+      </div>
+    }
+
     <div class="master-grid">
       <form class="card" [formGroup]="formBarbeiro" (ngSubmit)="cadastrarBarbeiro()">
         <h2>Cadastrar barbeiro</h2>
@@ -143,6 +153,60 @@
           }
         }
       </div>
+    </div>
+
+    <div class="card servico-card">
+      <h2>Cadastrar serviço</h2>
+
+      <form [formGroup]="formServico" (ngSubmit)="cadastrarServico()">
+        @if (erroCadastroServico()) {
+          <div class="alert alert-error">{{ erroCadastroServico() }}</div>
+        }
+        @if (sucessoCadastroServico()) {
+          <div class="alert alert-success">{{ sucessoCadastroServico() }}</div>
+        }
+
+        <div class="field">
+          <label for="nomeServico">Nome do serviço</label>
+          <input id="nomeServico" type="text" formControlName="nomeServico" placeholder="Ex: Corte, Barba..." />
+          @if (formServico.controls.nomeServico.touched && formServico.controls.nomeServico.invalid) {
+            <span class="field-error">Digite o nome do serviço.</span>
+          }
+          @if (errosPorCampoServico()['nomeServico']) {
+            <span class="field-error">{{ errosPorCampoServico()['nomeServico'] }}</span>
+          }
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="duracaoServico">Duração (min)</label>
+            <input id="duracaoServico" type="number" formControlName="duracaoServico" placeholder="30" min="1" />
+            @if (formServico.controls.duracaoServico.touched && formServico.controls.duracaoServico.invalid) {
+              <span class="field-error">Digite a duração em minutos.</span>
+            }
+          </div>
+
+          <div class="field">
+            <label for="precoServico">Preço (R$)</label>
+            <input id="precoServico" type="number" formControlName="precoServico" placeholder="40" min="0" step="0.01" />
+            @if (formServico.controls.precoServico.touched && formServico.controls.precoServico.invalid) {
+              <span class="field-error">Digite o preço.</span>
+            }
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" [disabled]="cadastrandoServico()">
+          {{ cadastrandoServico() ? 'Cadastrando...' : 'Cadastrar serviço' }}
+        </button>
+      </form>
+
+      @if (servicos().length > 0) {
+        <ul class="lista-servicos">
+          @for (s of servicos(); track s.id) {
+            <li>{{ s.nomeServico }} — {{ s.duracaoServico }}min — R$ {{ s.precoServico }}</li>
+          }
+        </ul>
+      }
     </div>
 
     <div class="card agenda-geral-card">

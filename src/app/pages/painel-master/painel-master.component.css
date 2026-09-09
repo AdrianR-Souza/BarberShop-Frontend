@@ -1,3 +1,27 @@
+.lembrete-pendentes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.lista-servicos {
+  list-style: none;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lista-servicos li {
+  padding: 0.6rem 0.8rem;
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+
 .master-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -15,6 +39,7 @@
   margin-bottom: 1.1rem;
 }
 
+.servico-card,
 .agenda-geral-card {
   margin-top: 1.75rem;
 }
