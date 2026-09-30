@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Agendamento, AgendamentoRequest, RelatorioServicos } from '../models/models';
+import { Agendamento, AgendamentoRequest, BloqueioAgenda, BloqueioAgendaRequest, RelatorioServicos } from '../models/models';
 
 @Injectable({ providedIn: 'root' })
 export class AgendaService {
@@ -46,5 +46,17 @@ export class AgendaService {
 
   gerarRelatorio(inicio: string, fim: string): Observable<RelatorioServicos> {
     return this.http.get<RelatorioServicos>(`${this.baseUrl}/relatorio`, { params: { inicio, fim } });
+  }
+
+  criarBloqueio(request: BloqueioAgendaRequest): Observable<BloqueioAgenda> {
+    return this.http.post<BloqueioAgenda>(`${this.baseUrl}/bloqueios`, request);
+  }
+
+  listarMeusBloqueios(): Observable<BloqueioAgenda[]> {
+    return this.http.get<BloqueioAgenda[]>(`${this.baseUrl}/bloqueios`);
+  }
+
+  removerBloqueio(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/bloqueios/${id}`);
   }
 }

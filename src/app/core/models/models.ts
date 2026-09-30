@@ -51,6 +51,21 @@ export interface AgendamentoRequest {
   idadeTerceiro?: number;
 }
 
+// Corpo enviado ao POST /agenda/bloqueios
+export interface BloqueioAgendaRequest {
+  dataHoraInicio: string;
+  dataHoraFim: string;
+  motivo?: string;
+}
+
+export interface BloqueioAgenda {
+  id: number;
+  barbeiro: Usuario;
+  dataHoraInicio: string;
+  dataHoraFim: string;
+  motivo?: string;
+}
+
 export type StatusAgendamento = 'PENDENTE' | 'CONFIRMADO' | 'CANCELADO' | 'CONCLUIDO';
 
 export interface Agendamento {

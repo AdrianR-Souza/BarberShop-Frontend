@@ -179,7 +179,7 @@ export class AgendarComponent implements OnInit {
         error: (err: HttpErrorResponse) => {
           this.enviando.set(false);
           if (err.status === 409) {
-            this.erroGeral.set('Esse horário já está ocupado para esse barbeiro. Escolhe outro.');
+            this.erroGeral.set(err.error?.mensagem ?? 'Esse horário já está ocupado para esse barbeiro. Escolhe outro.');
             this.atualizarHorariosDisponiveis();
           } else if (err.status === 404) {
             this.erroGeral.set('Barbeiro ou serviço não encontrado. Atualiza a página e tenta de novo.');

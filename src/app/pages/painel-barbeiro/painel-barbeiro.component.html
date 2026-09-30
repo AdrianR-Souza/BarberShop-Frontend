@@ -55,5 +55,61 @@
         </div>
       }
     </div>
+
+    <div class="card bloqueio-card">
+      <h2>Fechar agenda</h2>
+      <p class="bloqueio-intro">Vai sair, tirar férias ou tem um compromisso? Escolhe o período e ninguém consegue marcar horário com você nesse intervalo.</p>
+
+      <form [formGroup]="formBloqueio" (ngSubmit)="criarBloqueio()">
+        @if (erroBloqueio()) {
+          <div class="alert alert-error">{{ erroBloqueio() }}</div>
+        }
+
+        <div class="field-row">
+          <div class="field">
+            <label for="dataInicio">De (data)</label>
+            <input id="dataInicio" type="date" formControlName="dataInicio" />
+          </div>
+          <div class="field">
+            <label for="horaInicio">De (hora)</label>
+            <input id="horaInicio" type="time" formControlName="horaInicio" />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="dataFim">Até (data)</label>
+            <input id="dataFim" type="date" formControlName="dataFim" />
+          </div>
+          <div class="field">
+            <label for="horaFim">Até (hora)</label>
+            <input id="horaFim" type="time" formControlName="horaFim" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="motivo">Motivo (opcional)</label>
+          <input id="motivo" type="text" formControlName="motivo" placeholder="Ex: Férias" />
+        </div>
+
+        <button type="submit" class="btn btn-primary" [disabled]="cadastrandoBloqueio()">
+          {{ cadastrandoBloqueio() ? 'Fechando...' : 'Fechar agenda nesse período' }}
+        </button>
+      </form>
+
+      @if (bloqueios().length > 0) {
+        <ul class="lista-bloqueios">
+          @for (b of bloqueios(); track b.id) {
+            <li>
+              <span>
+                {{ b.dataHoraInicio | date: 'dd/MM/yyyy HH:mm' }} até {{ b.dataHoraFim | date: 'dd/MM/yyyy HH:mm' }}
+                @if (b.motivo) { — {{ b.motivo }} }
+              </span>
+              <button type="button" class="btn btn-danger-ghost" (click)="removerBloqueio(b.id)">Reabrir</button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
   </div>
 </div>
