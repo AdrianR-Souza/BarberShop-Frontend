@@ -7,7 +7,7 @@
   <nav class="nav-links">
     @if (auth.isLoggedIn()) {
       <a routerLink="/agendar" class="btn btn-ghost">Agendar</a>
-      @if (auth.role() === 'ROLE_BARBEIRO') {
+      @if (auth.role() === 'ROLE_BARBEIRO' || auth.role() === 'ROLE_MASTER') {
         <a routerLink="/painel-barbeiro" class="btn btn-ghost">Painel do barbeiro</a>
       }
       @if (auth.role() === 'ROLE_MASTER') {
