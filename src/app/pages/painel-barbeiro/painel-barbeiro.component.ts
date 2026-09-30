@@ -3,7 +3,9 @@ import { DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AgendaService } from '../../core/services/agenda.service';
-import { Agendamento, BloqueioAgenda } from '../../core/models/models';
+import { AuthService } from '../../core/services/auth.service';
+import { UsuarioService } from '../../core/services/usuario.service';
+import { Agendamento, BloqueioAgenda, Usuario } from '../../core/models/models';
 import { rotuloStatusAgendamento } from '../../core/utils/status-agendamento';
 import { dataLocalISO } from '../../core/utils/data';
 import { formatarTelefone } from '../../core/utils/telefone';
@@ -17,6 +19,8 @@ import { formatarTelefone } from '../../core/utils/telefone';
 })
 export class PainelBarbeiroComponent implements OnInit {
   private agendaService = inject(AgendaService);
+  private usuarioService = inject(UsuarioService);
+  private auth = inject(AuthService);
   private fb = inject(FormBuilder);
 
   readonly carregando = signal(false);
@@ -26,6 +30,10 @@ export class PainelBarbeiroComponent implements OnInit {
 
   rotuloStatus = rotuloStatusAgendamento;
   formatarTelefone = formatarTelefone;
+
+  readonly ehMaster = () => this.auth.role() === 'ROLE_MASTER';
+  readonly barbeiros = signal<Usuario[]>([]);
+  readonly barbeiroSelecionadoId = signal<string>('');
 
   readonly bloqueios = signal<BloqueioAgenda[]>([]);
   readonly cadastrandoBloqueio = signal(false);
@@ -42,6 +50,12 @@ export class PainelBarbeiroComponent implements OnInit {
   ngOnInit(): void {
     this.carregarAgenda();
     this.carregarBloqueios();
+
+    if (this.ehMaster()) {
+      this.usuarioService.listarBarbeiros().subscribe({
+        next: (barbeiros) => this.barbeiros.set(barbeiros)
+      });
+    }
   }
 
   mudarData(novaData: string): void {
@@ -86,8 +100,14 @@ export class PainelBarbeiroComponent implements OnInit {
     });
   }
 
+  mudarBarbeiroSelecionado(barbeiroId: string): void {
+    this.barbeiroSelecionadoId.set(barbeiroId);
+    this.carregarBloqueios();
+  }
+
   private carregarBloqueios(): void {
-    this.agendaService.listarMeusBloqueios().subscribe({
+    const id = this.barbeiroSelecionadoId();
+    this.agendaService.listarBloqueios(id ? Number(id) : undefined).subscribe({
       next: (bloqueios) => this.bloqueios.set(bloqueios)
     });
   }
@@ -102,12 +122,14 @@ export class PainelBarbeiroComponent implements OnInit {
     this.cadastrandoBloqueio.set(true);
 
     const { dataInicio, horaInicio, dataFim, horaFim, motivo } = this.formBloqueio.getRawValue();
+    const barbeiroId = this.barbeiroSelecionadoId();
 
     this.agendaService
       .criarBloqueio({
         dataHoraInicio: `${dataInicio}T${horaInicio}:00`,
         dataHoraFim: `${dataFim}T${horaFim}:00`,
-        motivo: motivo || undefined
+        motivo: motivo || undefined,
+        ...(barbeiroId ? { barbeiroId: Number(barbeiroId) } : {})
       })
       .subscribe({
         next: () => {

@@ -52,8 +52,10 @@ export class AgendaService {
     return this.http.post<BloqueioAgenda>(`${this.baseUrl}/bloqueios`, request);
   }
 
-  listarMeusBloqueios(): Observable<BloqueioAgenda[]> {
-    return this.http.get<BloqueioAgenda[]>(`${this.baseUrl}/bloqueios`);
+  listarBloqueios(barbeiroId?: number): Observable<BloqueioAgenda[]> {
+    return this.http.get<BloqueioAgenda[]>(`${this.baseUrl}/bloqueios`, {
+      params: barbeiroId ? { barbeiroId } : {}
+    });
   }
 
   removerBloqueio(id: number): Observable<void> {

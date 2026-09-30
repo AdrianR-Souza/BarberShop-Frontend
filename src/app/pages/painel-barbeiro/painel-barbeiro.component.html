@@ -58,7 +58,23 @@
 
     <div class="card bloqueio-card">
       <h2>Fechar agenda</h2>
-      <p class="bloqueio-intro">Vai sair, tirar férias ou tem um compromisso? Escolhe o período e ninguém consegue marcar horário com você nesse intervalo.</p>
+      <p class="bloqueio-intro">Vai sair, tirar férias ou tem um compromisso? Escolhe o período e ninguém consegue marcar horário nesse intervalo.</p>
+
+      @if (ehMaster()) {
+        <div class="field">
+          <label for="barbeiroBloqueio">Fechar a agenda de</label>
+          <select
+            id="barbeiroBloqueio"
+            [value]="barbeiroSelecionadoId()"
+            (change)="mudarBarbeiroSelecionado($any($event.target).value)"
+          >
+            <option value="">Minha própria agenda</option>
+            @for (b of barbeiros(); track b.id) {
+              <option [value]="b.id">{{ b.nome }}</option>
+            }
+          </select>
+        </div>
+      }
 
       <form [formGroup]="formBloqueio" (ngSubmit)="criarBloqueio()">
         @if (erroBloqueio()) {
