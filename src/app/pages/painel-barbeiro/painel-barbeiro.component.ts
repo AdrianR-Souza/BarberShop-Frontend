@@ -79,24 +79,10 @@ export class PainelBarbeiroComponent implements OnInit {
     });
   }
 
-  confirmar(id: number): void {
-    this.agendaService.confirmar(id).subscribe({
-      next: () => this.carregarAgenda(),
-      error: () => this.erro.set('Não foi possível confirmar esse agendamento agora.')
-    });
-  }
-
   cancelar(id: number): void {
     this.agendaService.cancelar(id).subscribe({
       next: () => this.carregarAgenda(),
       error: () => this.erro.set('Não foi possível cancelar esse agendamento agora.')
-    });
-  }
-
-  concluir(id: number): void {
-    this.agendaService.concluir(id).subscribe({
-      next: () => this.carregarAgenda(),
-      error: () => this.erro.set('Não foi possível concluir esse agendamento agora.')
     });
   }
 

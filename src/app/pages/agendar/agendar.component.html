@@ -4,16 +4,6 @@
     <h1>Marcar horário</h1>
     <p>Escolhe o barbeiro, o serviço e o horário que funciona pra você.</p>
 
-    @if (ehMaster() && agendamentosPendentes().length > 0) {
-      <div class="alert alert-error lembrete-pendentes">
-        <span>
-          ⏰ Você tem {{ agendamentosPendentes().length }}
-          {{ agendamentosPendentes().length === 1 ? 'corte' : 'cortes' }} aguardando confirmação.
-        </span>
-        <a routerLink="/agenda-geral" [queryParams]="{ pendentes: 1 }" class="btn btn-ghost">Ver pendentes</a>
-      </div>
-    }
-
     @if (carregandoDados()) {
       <p>Carregando...</p>
     } @else {
@@ -131,7 +121,7 @@
                 }
                 <span class="ticket-meta ticket-data">{{ ag.dataHoraInicio | date: 'dd/MM/yyyy · HH:mm' }}</span>
               </div>
-              @if (ag.status === 'PENDENTE' || ag.status === 'CONFIRMADO') {
+              @if (ag.status === 'CONFIRMADO') {
                 <button type="button" class="btn btn-danger-ghost ticket-cancel" (click)="cancelar(ag.id)">
                   Cancelar
                 </button>

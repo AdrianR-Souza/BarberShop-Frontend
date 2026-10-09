@@ -36,14 +36,6 @@ export class AgendaService {
     return this.http.put<Agendamento>(`${this.baseUrl}/${id}/cancelar`, {});
   }
 
-  confirmar(id: number): Observable<Agendamento> {
-    return this.http.put<Agendamento>(`${this.baseUrl}/${id}/confirmar`, {});
-  }
-
-  concluir(id: number): Observable<Agendamento> {
-    return this.http.put<Agendamento>(`${this.baseUrl}/${id}/concluido`, {});
-  }
-
   gerarRelatorio(inicio: string, fim: string): Observable<RelatorioServicos> {
     return this.http.get<RelatorioServicos>(`${this.baseUrl}/relatorio`, { params: { inicio, fim } });
   }

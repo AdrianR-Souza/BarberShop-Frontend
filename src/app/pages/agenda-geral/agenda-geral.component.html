@@ -53,14 +53,8 @@
                 <span class="ticket-meta ticket-data">{{ ag.dataHoraInicio | date: 'dd/MM/yyyy · HH:mm' }}</span>
               </div>
 
-              @if (ag.status === 'PENDENTE') {
+              @if (ag.status === 'CONFIRMADO') {
                 <div class="ticket-actions">
-                  <button type="button" class="btn btn-primary" (click)="confirmar(ag.id)">Confirmar</button>
-                  <button type="button" class="btn btn-danger-ghost" (click)="cancelar(ag.id)">Cancelar</button>
-                </div>
-              } @else if (ag.status === 'CONFIRMADO') {
-                <div class="ticket-actions">
-                  <button type="button" class="btn btn-primary" (click)="concluir(ag.id)">Concluir</button>
                   <button type="button" class="btn btn-danger-ghost" (click)="cancelar(ag.id)">Cancelar</button>
                 </div>
               }

@@ -35,11 +35,6 @@ export class AgendaGeralComponent implements OnInit {
       next: (barbeiros) => this.barbeiros.set(barbeiros)
     });
     this.carregarAgendaGeral();
-
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('pendentes') === '1') {
-      this.filtroData.set('');
-    }
   }
 
   mudarFiltroBarbeiro(barbeiroId: string): void {
@@ -80,24 +75,10 @@ export class AgendaGeralComponent implements OnInit {
       .sort((a, b) => a.dataHoraInicio.localeCompare(b.dataHoraInicio));
   }
 
-  confirmar(id: number): void {
-    this.agendaService.confirmar(id).subscribe({
-      next: () => this.carregarAgendaGeral(),
-      error: () => this.erroAgenda.set('Não foi possível confirmar esse agendamento agora.')
-    });
-  }
-
   cancelar(id: number): void {
     this.agendaService.cancelar(id).subscribe({
       next: () => this.carregarAgendaGeral(),
       error: () => this.erroAgenda.set('Não foi possível cancelar esse agendamento agora.')
-    });
-  }
-
-  concluir(id: number): void {
-    this.agendaService.concluir(id).subscribe({
-      next: () => this.carregarAgendaGeral(),
-      error: () => this.erroAgenda.set('Não foi possível concluir esse agendamento agora.')
     });
   }
 }

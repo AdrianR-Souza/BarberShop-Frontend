@@ -2,7 +2,7 @@
   <div class="container-narrow">
     <span class="eyebrow">Painel do barbeiro</span>
     <h1>Sua agenda do dia</h1>
-    <p>Confirma, conclui ou cancela os agendamentos marcados pra essa data.</p>
+    <p>Veja os agendamentos marcados pra essa data e cancele se precisar.</p>
 
     <div class="card">
       <div class="field">
@@ -39,14 +39,8 @@
                 <span class="ticket-meta ticket-data">{{ ag.dataHoraInicio | date: 'HH:mm' }} — {{ ag.dataHoraFim | date: 'HH:mm' }}</span>
               </div>
 
-              @if (ag.status === 'PENDENTE') {
+              @if (ag.status === 'CONFIRMADO') {
                 <div class="ticket-actions">
-                  <button type="button" class="btn btn-primary" (click)="confirmar(ag.id)">Confirmar</button>
-                  <button type="button" class="btn btn-danger-ghost" (click)="cancelar(ag.id)">Cancelar</button>
-                </div>
-              } @else if (ag.status === 'CONFIRMADO') {
-                <div class="ticket-actions">
-                  <button type="button" class="btn btn-primary" (click)="concluir(ag.id)">Concluir</button>
                   <button type="button" class="btn btn-danger-ghost" (click)="cancelar(ag.id)">Cancelar</button>
                 </div>
               }
