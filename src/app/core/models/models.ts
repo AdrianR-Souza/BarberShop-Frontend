@@ -48,7 +48,6 @@ export interface AgendamentoRequest {
   dataHoraInicio: string; // formato ISO, ex: "2026-08-20T14:30:00"
   // preenchidos só quando o agendamento é pra outra pessoa
   nomeTerceiro?: string;
-  idadeTerceiro?: number;
 }
 
 // Corpo enviado ao POST /agenda/bloqueios
@@ -77,7 +76,6 @@ export interface Agendamento {
   dataHoraFim: string;
   status: StatusAgendamento;
   nomeTerceiro?: string;
-  idadeTerceiro?: number;
 }
 
 // Mensagem de erro padrão devolvida pelo GlobalExceptionHandler:

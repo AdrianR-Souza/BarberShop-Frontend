@@ -45,7 +45,7 @@
                 <span class="ticket-status status-{{ ag.status.toLowerCase() }}">{{ rotuloStatus(ag.status) }}</span>
                 <strong>{{ ag.servico.nomeServico }}</strong>
                 @if (ag.nomeTerceiro) {
-                  <span class="ticket-meta">{{ ag.nomeTerceiro }} ({{ ag.idadeTerceiro }} anos) com {{ ag.barbeiro.nome }} — agendado por {{ ag.cliente.nome }}</span>
+                  <span class="ticket-meta">{{ ag.nomeTerceiro }} com {{ ag.barbeiro.nome }} — agendado por {{ ag.cliente.nome }}</span>
                 } @else {
                   <span class="ticket-meta">{{ ag.cliente.nome }} com {{ ag.barbeiro.nome }}</span>
                 }

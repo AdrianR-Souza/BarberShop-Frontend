@@ -46,8 +46,7 @@ export class AgendarComponent implements OnInit {
     data: ['', Validators.required],
     hora: ['', Validators.required],
     paraQuem: ['mim' as 'mim' | 'terceiro', Validators.required],
-    nomeTerceiro: [''],
-    idadeTerceiro: ['']
+    nomeTerceiro: ['']
   });
 
   ngOnInit(): void {
@@ -63,19 +62,14 @@ export class AgendarComponent implements OnInit {
 
   private ajustarValidacaoTerceiro(paraQuem: 'mim' | 'terceiro' | null): void {
     const nomeCtrl = this.form.controls.nomeTerceiro;
-    const idadeCtrl = this.form.controls.idadeTerceiro;
 
     if (paraQuem === 'terceiro') {
       nomeCtrl.setValidators([Validators.required, Validators.minLength(2)]);
-      idadeCtrl.setValidators([Validators.required, Validators.min(1), Validators.max(120)]);
     } else {
       nomeCtrl.clearValidators();
-      idadeCtrl.clearValidators();
       nomeCtrl.setValue('', { emitEvent: false });
-      idadeCtrl.setValue('', { emitEvent: false });
     }
     nomeCtrl.updateValueAndValidity({ emitEvent: false });
-    idadeCtrl.updateValueAndValidity({ emitEvent: false });
   }
 
   private carregarTudo(): void {
@@ -141,7 +135,7 @@ export class AgendarComponent implements OnInit {
     this.sucesso.set(null);
     this.enviando.set(true);
 
-    const { barbeiroId, servicoId, data, hora, paraQuem, nomeTerceiro, idadeTerceiro } = this.form.getRawValue();
+    const { barbeiroId, servicoId, data, hora, paraQuem, nomeTerceiro } = this.form.getRawValue();
 
     this.agendaService
       .criar({
@@ -149,7 +143,7 @@ export class AgendarComponent implements OnInit {
         servicoId: Number(servicoId),
         dataHoraInicio: `${data}T${hora}:00`,
         ...(paraQuem === 'terceiro'
-          ? { nomeTerceiro: nomeTerceiro!.trim(), idadeTerceiro: Number(idadeTerceiro) }
+          ? { nomeTerceiro: nomeTerceiro!.trim() }
           : {})
       })
       .subscribe({
