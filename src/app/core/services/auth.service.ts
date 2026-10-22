@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, catchError, map, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LoginRequest, LoginResponse } from '../models/models';
 
@@ -26,6 +26,34 @@ export class AuthService {
           this.role.set(this.extrairRole(resposta.token));
         })
       );
+  }
+
+  // O token guardado no navegador pode ter sido forjado (qualquer um consegue gravar um
+  // JWT falso no localStorage pelo console). A assinatura só é conferida pelo servidor,
+  // então a sessão só é considerada válida depois que o backend confirma quem é o usuário.
+  // O backend já barrava os dados de qualquer jeito; isso evita mostrar telas de admin
+  // (e links no menu) pra quem tem um token falso.
+  validarSessao(): Observable<boolean> {
+    if (!this.temTokenValido()) {
+      this.logout();
+      return of(false);
+    }
+
+    return this.http.get<{ role: string }>(`${environment.apiUrl}/usuarios/me`).pipe(
+      tap((perfil) => {
+        this.isLoggedIn.set(true);
+        this.role.set(perfil.role);
+      }),
+      map(() => true),
+      catchError((err: HttpErrorResponse) => {
+        if (err.status === 401 || err.status === 403) {
+          this.logout();
+          return of(false);
+        }
+        // sem conexão / servidor fora: não derruba a sessão; o backend segue protegendo os dados
+        return of(true);
+      })
+    );
   }
 
   logout(): void {
